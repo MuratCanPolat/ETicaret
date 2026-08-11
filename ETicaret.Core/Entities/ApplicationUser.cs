@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
-namespace ETicaret.Core.Entities
+namespace ETicaret.Core.Entities 
 {
-    internal class ApplicationUser
+    public class ApplicationUser : IdentityUser
     {
         [Required(ErrorMessage = "Ad alanı zorunludur.")]
         [StringLength(50)]
@@ -15,8 +13,8 @@ namespace ETicaret.Core.Entities
         [StringLength(50)]
         public string LastName { get; set; } = string.Empty;
 
-        public ICollection<Product> Products { get; set; }
+        public ICollection<Product> Products { get; set; } = new List<Product>();
 
-        public ICollection<Order> Orders { get; set; }
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

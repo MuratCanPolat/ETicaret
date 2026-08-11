@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ETicaret.Core.Entities
 {
-    internal class Cart
+    public class Cart
     {
         public int Id { get; set; }
 

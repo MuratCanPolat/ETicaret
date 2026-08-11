@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ETicaret.Core.Entities
 {
-    internal class Category
+    public class Category
     {
         [Required(ErrorMessage = "Kategori adı zorunludur.")]
         [StringLength(50, ErrorMessage = "Kategori adı en fazla 50 karakter olabilir.")]

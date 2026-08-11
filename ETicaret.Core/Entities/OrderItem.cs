@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ETicaret.Core.Entities
 {
-    internal class OrderItem
+    public class OrderItem
     {
         public int Id { get; set; }
 
@@ -22,7 +22,7 @@ namespace ETicaret.Core.Entities
         [Required]
         public int ProductId { get; set; }
 
-        public Order? Order { get; set; }
+        public Order? Order { get; set; } 
         public Product? Product { get; set; }
     }
 }
