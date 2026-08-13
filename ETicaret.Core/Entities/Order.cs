@@ -27,6 +27,6 @@ namespace ETicaret.Core.Entities
         [StringLength(50)]
         public string OrderStatus { get; set; } = "Pending";
 
-        public ICollection<OrderItem> OrderItems { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }

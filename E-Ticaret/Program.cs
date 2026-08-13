@@ -1,9 +1,14 @@
 using ETicaret.Core.Entities;
+using ETicaret.Core.Interfaces;
 using ETicaret.Data.Context;
+using ETicaret.Data.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Repository Pattern Kaydı.
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -87,6 +92,51 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+#region Veri Tohumlama.
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
+    // ApplicationUser sınıfını kullanma.
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
+    // Admin Rolü Yoksa Oluştur.
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+    }
+
+    // Müşteri sınıfı yoksa oluştur. Bu satıra gerçekten ihtiyaç var mı emin değilim. Daha sonra döneceğim.
+    if (!await roleManager.RoleExistsAsync("Customer"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Customer"));
+    }
+
+    // Varsayılan Admin Kullanıcısı Yoksa Oluştur.
+    var adminEmail = "admin@eticaret.com";
+    var adminPassword = "Password12!";
+
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+    if (adminUser == null)
+    {
+        adminUser = new ApplicationUser
+        {
+            UserName = "admin",
+            Email = adminEmail,
+            FirstName = "Sistem",
+            LastName = "Yöneticisi",
+            EmailConfirmed = true // Giriş yapabilmesi için maili onaylanmış sayıyoruz.
+        };
+
+        var createResult = await userManager.CreateAsync(adminUser, adminPassword);
+
+        // Kullanıcı başarıyla oluştuysa ona "Admin" rolünü ata.
+        if (createResult.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+}
+#endregion
 app.Run();
