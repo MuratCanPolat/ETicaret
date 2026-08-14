@@ -27,6 +27,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     // Şifre kuralları
+    options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = false;
     options.Password.RequiredLength = 6;
 })
@@ -70,6 +71,12 @@ builder.Services.AddOpenIddict()
         options.UseAspNetCore();
     });
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -83,8 +90,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapStaticAssets();
 
@@ -122,7 +129,7 @@ using (var scope = app.Services.CreateScope())
     {
         adminUser = new ApplicationUser
         {
-            UserName = "admin",
+            UserName = adminEmail,
             Email = adminEmail,
             FirstName = "Sistem",
             LastName = "Yöneticisi",
@@ -136,6 +143,20 @@ using (var scope = app.Services.CreateScope())
         {
             await userManager.AddToRoleAsync(adminUser, "Admin");
         }
+    }
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    if (!dbContext.Categories.Any())
+    {
+        dbContext.Categories.AddRange(
+            new Category { Name = "Elektronik" },
+            new Category { Name = "Giyim & Moda" },
+            new Category { Name = "Ev & Yaşam" },
+            new Category { Name = "Kozmetik & Kişisel Bakım" },
+            new Category { Name = "Spor & Outdoor" }
+        );
+
+        dbContext.SaveChanges();
     }
 }
 #endregion

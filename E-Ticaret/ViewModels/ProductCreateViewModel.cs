@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace ETicaretWeb.ViewModels
 {
@@ -9,11 +10,29 @@ namespace ETicaretWeb.ViewModels
         [Display(Name = "Ürün Adı")]
         public string Name { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Ürün açıklaması zorunludur.")]
+        [StringLength(300, ErrorMessage = "Açıklama en fazla 300 karakter olabilir.")]
+        [Display(Name = "Açıklama")]
+        public string Description { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Fiyat alanı zorunludur.")]
         [Range(1, 1000000, ErrorMessage = "Lütfen geçerli bir fiyat giriniz (Min: 1 ₺).")]
         [Display(Name = "Fiyat (₺)")]
         public decimal Price { get; set; }
 
-        //TODO İleride buraya Kategori seçimi (Dropdown) ve Görsel yükleme eklenecek.
+        [Required(ErrorMessage = "Stok miktarı zorunludur.")]
+        [Range(0, int.MaxValue, ErrorMessage = "Geçerli bir stok miktarı giriniz.")]
+        [Display(Name = "Stok Adedi")]
+        public int StockQuantity { get; set; }
+
+        [Required(ErrorMessage = "Lütfen ürün için bir görsel yükleyin.")]
+        [Display(Name = "Ürün Görseli")]
+        public IFormFile ImageFile { get; set; }
+
+        [Required(ErrorMessage = "Lütfen bir kategori seçin.")]
+        [Display(Name = "Kategori")]
+        public int CategoryId { get; set; }
+
+        //TODO İleride buraya Kategori seçimi (Dropdown) ve Görsel yükleme eklenecek.(Tamamlandı)
     }
 }
