@@ -1,29 +1,18 @@
 ﻿@model IEnumerable<ETicaretWeb.ViewModels.ProductListViewModel>
 
 @{
-    ViewData["Title"] = "Ana Sayfa";
+    ViewData["Title"] = "Mağaza";
 }
 
-<div class="p-5 mb-5 bg-light rounded-3 shadow-sm border">
-    <div class="container-fluid py-3 text-center">
-        <h1 class="display-5 fw-bold text-primary">Alışverişin Yeni Adresine Hoş Geldiniz</h1>
-        <p class="col-md-8 mx-auto fs-5 text-muted mt-3">
-            Teknolojiden modaya, ev yaşamdan kozmetiğe kadar aradığınız binlerce ürün en iyi fiyat garantisiyle burada. Güvenli alışverişin keyfini çıkarın.
-        </p>
-        <a asp-controller="Products" asp-action="Index" class="btn btn-primary btn-lg mt-3 px-5 rounded-pill">Alışverişe Başla</a>
-    </div>
-</div>
-
-<div class="container">
-    <h3 class="fw-bold text-dark mb-4 border-bottom pb-2">Öne Çıkan Ürünler</h3>
+<div class="container mt-4">
+    <h2 class="fw-bold text-dark mb-4">Mağaza</h2>
 
     <div class="row">
         @if (!Model.Any())
         {
             <div class="col-12">
                 <div class="alert alert-info text-center shadow-sm py-4">
-                    <h5 class="mb-0">Şu anda vitrinde ürün bulunmuyor.</h5>
-                    <p class="mt-2 text-muted">Satıcılar tarafından yeni ürünler eklendiğinde burada listelenecektir.</p>
+                    <h5 class="mb-0">Şu anda vitrinde hiç ürün bulunmamaktadır.</h5>
                 </div>
             </div>
         }
@@ -42,7 +31,7 @@
                         </div>
 
                         <div class="card-footer bg-white border-top-0 text-center pb-3">
-                            <button class="btn btn-outline-dark w-100">Sepete Ekle</button>
+                            <button class="btn btn-outline-dark w-100">İncele</button>
                         </div>
                     </div>
                 </div>
