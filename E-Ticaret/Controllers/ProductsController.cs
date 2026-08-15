@@ -58,6 +58,11 @@ namespace ETicaretWeb.Controllers
                                    // oturumunu kötüye kullanarak, onun haberi ve onayı olmadan o site üzerinde yetkisiz işlemler (para transferi, şifre değişimi vb.) yapılmasını sağlayan bir siber saldırı türüdür.
         public async Task<IActionResult> Create(ProductCreateViewModel model)
         {
+            if (model.ImageFile == null || model.ImageFile.Length == 0)
+            {
+                ModelState.AddModelError("ImageFile", "Lütfen ürün için bir görsel yükleyin.");
+            }
+
             // Model kuralları sağlanıyor mu?
             if (ModelState.IsValid)
             {
@@ -106,7 +111,7 @@ namespace ETicaretWeb.Controllers
                 await _productRepository.SaveChangesAsync();
 
                 // Başarılı olursa listeleme (Index) sayfasına geri gönder.
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(MyProducts));
             }
             var categories = await _categoryRepository.GetAllAsync();
             ViewBag.Categories = new SelectList(categories, "Id", "Name");
@@ -190,7 +195,7 @@ namespace ETicaretWeb.Controllers
 
                  _productRepository.Update(product);
                 await _productRepository.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(MyProducts));
             }
 
             var categories = await _categoryRepository.GetAllAsync();
@@ -199,6 +204,53 @@ namespace ETicaretWeb.Controllers
             ViewBag.ExistingImageUrl = existingImageUrl;
 
             return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Satıcı")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var product = await _productRepository.GetByIdAsync(id);
+            if (product == null) return NotFound();
+
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isAdmin = User.IsInRole("Admin");
+
+            if (!isAdmin && product.UserId != currentUserId)
+            {
+                return Forbid();
+            }
+
+            _productRepository.Delete(product);
+            await _productRepository.SaveChangesAsync();
+
+            return RedirectToAction(nameof(MyProducts));
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var product = await _productRepository.GetByIdAsync(id);
+            if (product == null) return NotFound();
+
+            return View(product);
+        }
+        [Authorize(Roles = "Admin,Satıcı")]
+        public async Task<IActionResult> MyProducts()
+        {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var myProducts = await _productRepository.FindAsync(p => p.UserId == currentUserId);
+
+            var viewModelList = myProducts.Select(p => new ProductListViewModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                FormattedPrice = p.Price.ToString("C"),
+                ImageUrl = string.IsNullOrEmpty(p.ImageUrl) ? "https://via.placeholder.com/100" : p.ImageUrl
+            }).ToList();
+
+            return View(viewModelList);
         }
     }
 }

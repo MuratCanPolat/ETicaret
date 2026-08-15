@@ -25,13 +25,13 @@ namespace ETicaretWeb.ViewModels
         [Display(Name = "Stok Adedi")]
         public int StockQuantity { get; set; }
 
-        [Required(ErrorMessage = "Lütfen ürün için bir görsel yükleyin.")]
         [Display(Name = "Ürün Görseli")]
-        public IFormFile ImageFile { get; set; }
+        public IFormFile? ImageFile { get; set; }
 
-        [Required(ErrorMessage = "Lütfen bir kategori seçin.")]
         [Display(Name = "Kategori")]
         public int CategoryId { get; set; }
+
+        public string? ExistingImageUrl { get; set; }
 
         //TODO İleride buraya Kategori seçimi (Dropdown) ve Görsel yükleme eklenecek.(Tamamlandı)
     }

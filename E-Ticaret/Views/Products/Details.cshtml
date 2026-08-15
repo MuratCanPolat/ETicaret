@@ -1,0 +1,45 @@
+﻿@model ETicaret.Core.Entities.Product
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row bg-white p-4 rounded shadow-sm border">
+
+        <div class="col-md-6 mb-4 mb-md-0 text-center">
+            <img src="@Model.ImageUrl" class="img-fluid rounded" alt="@Model.Name" style="object-fit: contain; max-height: 500px; width: 100%;" />
+        </div>
+
+        <div class="col-md-6 d-flex flex-column justify-content-center">
+            <h2 class="fw-bold text-dark">@Model.Name</h2>
+            <h3 class="text-primary fw-bold mt-2">@Model.Price.ToString("C")</h3>
+
+            <p class="mt-4 fs-5 text-muted" style="white-space: pre-line;">@Model.Description</p>
+
+            <hr class="my-4" />
+
+            <ul class="list-unstyled mb-4">
+                <li class="mb-3 fs-5">
+                    <strong><i class="bi bi-box-seam"></i> Stok Durumu:</strong>
+                    @if (Model.StockQuantity > 0)
+                    {
+                        <span class="badge bg-success ms-2">Stokta Var (@Model.StockQuantity Adet)</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger ms-2">Tükendi</span>
+                    }
+                </li>
+            </ul>
+
+            <div class="d-grid gap-3 d-md-flex mt-auto">
+                <button class="btn btn-primary btn-lg px-5" @(Model.StockQuantity == 0 ? "disabled" : "")>
+                    <i class="bi bi-cart-plus"></i> Sepete Ekle
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">Mağazaya Dön</a>
+            </div>
+        </div>
+
+    </div>
+</div>

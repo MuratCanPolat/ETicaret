@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Yönetim Paneli";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h1 class="display-4 fw-bold text-danger"><i class="bi bi-shield-lock"></i> Admin Paneline Hoş Geldiniz</h1>
+            <p class="lead mt-3">Bu sayfayı sadece "Admin" yetkisine sahip olan yöneticiler görebilir.</p>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3 shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Toplam Ürün</h5>
+                    <p class="card-text display-6 fw-bold">@ViewBag.TotalProducts</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3 shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Toplam Kategori</h5>
+                    <p class="card-text display-6 fw-bold">@ViewBag.TotalCategories</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-dark bg-warning mb-3 shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Kayıtlı Kullanıcı</h5>
+                    <p class="card-text display-6 fw-bold">@ViewBag.TotalUsers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

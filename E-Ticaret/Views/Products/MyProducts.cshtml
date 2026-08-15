@@ -1,0 +1,92 @@
+﻿@model IEnumerable<ETicaretWeb.ViewModels.ProductListViewModel>
+
+@{
+    ViewData["Title"] = "Profilim ve İlanlarım";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">Profilim ve İlanlarım</h2>
+        <a asp-action="Create" class="btn btn-primary fw-bold">Yeni İlan Ekle</a>
+    </div>
+
+    <div class="table-responsive shadow-sm">
+        <table class="table table-hover align-middle border">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col" style="width: 120px;">Resim</th>
+                    <th scope="col">Ürün Başlığı</th>
+                    <th scope="col">Fiyat</th>
+                    <th scope="col" class="text-end">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">Henüz hiç ilanınız bulunmuyor.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@item.ImageUrl" alt="@item.Name" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;" />
+                            </td>
+                            <td class="fw-bold">@item.Name</td>
+                            <td class="text-success fw-bold">@item.FormattedPrice</td>
+                                <td class="text-end">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm fw-bold">Düzenle</a>
+                                    <button type="button" class="btn btn-danger btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#deleteModal" data-productid="@item.Id" data-productname="@item.Name">Sil</button>
+                                </td>
+                        </tr>
+                    }
+                    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content border-0 shadow">
+                                <div class="modal-header bg-danger text-white">
+                                    <h5 class="modal-title fw-bold" id="deleteModalLabel"><i class="bi bi-exclamation-triangle"></i> Ürünü Sil</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body fs-5 mt-2">
+                                    <span class="fw-bold text-dark" id="modalProductName"></span> adlı ürünü silmek istediğinize emin misiniz? <br />
+                                    <small class="text-muted fs-6">Bu işlem geri alınamaz.</small>
+                                </div>
+                                <div class="modal-footer bg-light">
+                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">İptal</button>
+                                    <form id="deleteForm" method="post" action="">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-danger fw-bold">Evet, Sil</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        var deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function(event) {
+            // Modalı tetikleyen butonu yakala
+            var button = event.relatedTarget;
+
+            // Butondaki data özelliklerini al
+            var productId = button.getAttribute('data-productid');
+            var productName = button.getAttribute('data-productname');
+
+            // Modal içindeki ürün adını güncelle
+            var modalProductName = deleteModal.querySelector('#modalProductName');
+            modalProductName.textContent = productName;
+
+            // Formun gideceği Action URL'sini güncelle
+            var deleteForm = deleteModal.querySelector('#deleteForm');
+            deleteForm.action = '/Products/Delete/' + productId;
+        });
+    </script>
+}

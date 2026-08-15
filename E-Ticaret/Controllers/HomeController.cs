@@ -20,14 +20,13 @@ namespace E_Ticaret.Controllers
         {
             var products = await _productRepository.GetAllAsync();
 
-            //TODO İleride buraya ".OrderByDescending(x => x.Id).Take(8)" ekleyerek sadece en yeni 8 ilanı getirilmesi sağlanabilir.
-
-            var viewModelList = products.Select(p => new ProductListViewModel
+            var viewModelList = products.Take(8).Select(p => new ProductListViewModel
             {
                 Id = p.Id,
                 Name = p.Name,
                 FormattedPrice = p.Price.ToString("C"),
-                SellerName = "Sistem Yöneticisi"
+                ImageUrl = string.IsNullOrEmpty(p.ImageUrl) ? "https://via.placeholder.com/300x200?text=Gorsel+Yok" : p.ImageUrl,
+                SellerName = p.User?.FirstName ?? "Satıcı"
             }).ToList();
 
             return View(viewModelList);
