@@ -15,5 +15,7 @@
         public string SellerName { get; set; } = string.Empty;
 
         public string ImageUrl { get; set; } = "https://via.placeholder.com/300x200?text=Gorsel+Yok";
+
+        public int StockQuantity { get; set; }
     }
 }

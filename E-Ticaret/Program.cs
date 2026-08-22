@@ -27,8 +27,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     // Şifre kuralları
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = true;
     options.SignIn.RequireConfirmedAccount = false;
-    options.Password.RequireDigit = false;
+    options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
 })
     .AddEntityFrameworkStores<AppDbContext>()

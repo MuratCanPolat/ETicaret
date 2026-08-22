@@ -14,6 +14,7 @@
                 <div class="card-body p-4">
 
                     <form asp-action="Edit" asp-route-id="@ViewBag.ProductId" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
                         @Html.AntiForgeryToken()
                         <div asp-validation-summary="All" class="text-danger mb-3 fw-bold border p-2 rounded bg-light"></div>
 
@@ -71,7 +72,7 @@
                         </div>
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a asp-action="MyProducts" class="btn btn-light border px-4">İptal</a>
+                            <a href="@(string.IsNullOrEmpty(ViewBag.ReturnUrl) ? Url.Action("MyProducts") : ViewBag.ReturnUrl)" class="btn btn-secondary fw-bold">İptal</a>
                             <button type="submit" class="btn btn-warning px-5 fw-bold">Değişiklikleri Kaydet</button>
                         </div>
                     </form>

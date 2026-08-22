@@ -16,6 +16,8 @@
                 <tr>
                     <th scope="col" style="width: 120px;">Resim</th>
                     <th scope="col">Ürün Başlığı</th>
+                    <th scope="col">Kategori</th>
+                    <th scope="col">Stok</th>
                     <th scope="col">Fiyat</th>
                     <th scope="col" class="text-end">İşlemler</th>
                 </tr>
@@ -36,9 +38,24 @@
                                 <img src="@item.ImageUrl" alt="@item.Name" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;" />
                             </td>
                             <td class="fw-bold">@item.Name</td>
+                            <td class="fw-bold">@item.CategoryName</td>
+                            <td>
+                                @if (item.StockQuantity == 0)
+                                {
+                                    <span class="badge bg-danger">Tükendi (0)</span>
+                                }
+                                else if (item.StockQuantity <= 10)
+                                {
+                                    <span class="badge bg-warning text-dark">Kritik (@item.StockQuantity)</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">@item.StockQuantity</span>
+                                }
+                            </td>
                             <td class="text-success fw-bold">@item.FormattedPrice</td>
                                 <td class="text-end">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm fw-bold">Düzenle</a>
+                                <a asp-area="" asp-controller="Products" asp-action="Edit" asp-route-id="@item.Id" asp-route-returnUrl="/Products/MyProducts" class="btn btn-warning btn-sm fw-bold">Düzenle</a>
                                     <button type="button" class="btn btn-danger btn-sm fw-bold" data-bs-toggle="modal" data-bs-target="#deleteModal" data-productid="@item.Id" data-productname="@item.Name">Sil</button>
                                 </td>
                         </tr>

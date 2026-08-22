@@ -4,39 +4,157 @@
     ViewData["Title"] = "Mağaza";
 }
 
-<div class="container mt-4">
-    <h2 class="fw-bold text-dark mb-4">Mağaza</h2>
+<style>
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 1rem;
+    }
 
-    <div class="row">
-        @if (!Model.Any())
-        {
-            <div class="col-12">
-                <div class="alert alert-info text-center shadow-sm py-4">
-                    <h5 class="mb-0">Şu anda vitrinde hiç ürün bulunmamaktadır.</h5>
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 1rem 2rem rgba(0,0,0,0.15) !important;
+        }
+
+    .product-img-wrapper {
+        overflow: hidden;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+    }
+
+    .product-img {
+        height: 240px;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-img {
+        transform: scale(1.08);
+    }
+
+    .category-link {
+        transition: padding-left 0.3s ease, background-color 0.3s ease;
+    }
+
+        .category-link:hover {
+            padding-left: 1.5rem !important;
+            background-color: #f8f9fa;
+        }
+</style>
+
+<div class="container-xl mt-4 mb-5">
+
+    @if (!string.IsNullOrEmpty(ViewBag.SearchQuery))
+    {
+        <div class="alert alert-primary bg-primary bg-opacity-10 border-primary border-opacity-25 shadow-sm mb-4 rounded-3 d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-search me-2"></i> <strong>"@ViewBag.SearchQuery"</strong> için arama sonuçları gösteriliyor.</span>
+            <a asp-action="Index" class="btn btn-sm btn-outline-primary rounded-pill fw-bold">Aramayı Temizle <i class="bi bi-x"></i></a>
+        </div>
+    }
+
+    <div class="row gx-lg-5">
+
+        <div class="col-lg-3 mb-4">
+            <div class="position-sticky" style="top: 2rem;">
+                <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-funnel-fill text-primary me-2"></i>Kategoriler</h5>
+
+                <div class="list-group shadow-sm border-0 rounded-4">
+                    <a asp-action="Index"
+                       asp-route-searchQuery="@ViewBag.SearchQuery"
+                       asp-route-sortBy="@ViewBag.CurrentSort"
+                       class="list-group-item list-group-item-action border-0 py-3 category-link @(ViewBag.CurrentCategory == null ? "active bg-primary fw-bold text-white rounded-top-4" : "text-dark rounded-top-4")">
+                        <i class="bi bi-grid-fill me-2"></i> Tüm Ürünler
+                    </a>
+
+                    @if (ViewBag.Categories != null)
+                    {
+                        foreach (var category in ViewBag.Categories)
+                        {
+                            <a asp-action="Index"
+                               asp-route-categoryId="@category.Id"
+                               asp-route-searchQuery="@ViewBag.SearchQuery"
+                               asp-route-sortBy="@ViewBag.CurrentSort"
+                               class="list-group-item list-group-item-action border-0 py-3 category-link @(ViewBag.CurrentCategory == category.Id ? "bg-primary bg-opacity-10 text-primary fw-bold border-start border-4 border-primary" : "text-dark")">
+                                @category.Name
+                            </a>
+                        }
+                    }
                 </div>
             </div>
-        }
-        else
-        {
-            @foreach (var item in Model)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm border-0">
+        </div>
 
-                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover; width: 100%;" />
+        <div class="col-lg-9">
 
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-bold text-dark mb-1">@item.Name</h5>
-                            <p class="text-success fw-bold mb-2">@item.FormattedPrice</p>
-                            <small class="text-muted mb-3">@item.SellerName</small>
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom">
+                <h4 class="fw-bold text-dark mb-3 mb-md-0">Vitrin</h4>
 
-                            <div class="mt-auto">
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark w-100">İncele</a>
+                <div class="d-flex align-items-center bg-light px-3 py-2 rounded-pill shadow-sm">
+                    <span class="text-muted small me-3"><strong class="text-dark">@Model.Count()</strong> ilan</span>
+
+                    <form asp-action="Index" method="get" id="sortForm" class="m-0">
+                        @if (!string.IsNullOrEmpty(ViewBag.SearchQuery))
+                        {
+                            <input type="hidden" name="searchQuery" value="@ViewBag.SearchQuery" />
+                        }
+                        @if (ViewBag.CurrentCategory != null)
+                        {
+                            <input type="hidden" name="categoryId" value="@ViewBag.CurrentCategory" />
+                        }
+
+                        <select name="sortBy" class="form-select form-select-sm border-0 bg-transparent fw-bold text-primary shadow-none cursor-pointer" onchange="document.getElementById('sortForm').submit();">
+                            <option value="">En Yeniler</option>
+                            <option value="price_asc" selected="@(ViewBag.CurrentSort == "price_asc")">En Düşük Fiyat</option>
+                            <option value="price_desc" selected="@(ViewBag.CurrentSort == "price_desc")">En Yüksek Fiyat</option>
+                            <option value="name_asc" selected="@(ViewBag.CurrentSort == "name_asc")">İsim (A-Z)</option>
+                            <option value="name_desc" selected="@(ViewBag.CurrentSort == "name_desc")">İsim (Z-A)</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+                @if (!Model.Any())
+                {
+                    <div class="col-12 text-center py-5 w-100">
+                        <i class="bi bi-basket text-muted opacity-50" style="font-size: 5rem;"></i>
+                        <h4 class="mt-4 text-muted fw-bold">Ürün Bulunamadı</h4>
+                        <p class="text-muted">Arama kriterlerinize veya seçili kategoriye uygun ürün bulunmuyor.</p>
+                        <a asp-action="Index" class="btn btn-outline-primary rounded-pill px-4 mt-2">Tüm Ürünleri Gör</a>
+                    </div>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <div class="col">
+                            <div class="card h-100 border-0 shadow-sm product-card">
+
+                                <div class="position-relative product-img-wrapper">
+                                    <img src="@item.ImageUrl" class="card-img-top w-100 product-img" alt="@item.Name">
+                                    <span class="badge bg-white text-dark position-absolute top-0 start-0 m-3 shadow-sm px-3 py-2 rounded-pill fw-bold">
+                                        <i class="bi bi-tag-fill text-primary me-1"></i>@item.CategoryName
+                                    </span>
+                                </div>
+
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <small class="text-muted"><i class="bi bi-shop me-1"></i>@item.SellerName</small>
+                                    </div>
+                                    <h5 class="card-title fw-bold text-dark mb-3 text-truncate" title="@item.Name">@item.Name</h5>
+                                    <h4 class="text-success fw-bold mb-0">@item.FormattedPrice</h4>
+                                </div>
+
+                                <div class="card-footer bg-transparent border-top-0 p-4 pt-0 mt-auto">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary w-100 rounded-pill fw-bold py-2 shadow-sm">
+                                        <i class="bi bi-eye-fill me-1"></i> Ürünü İncele
+                                    </a>
+                                </div>
+
                             </div>
                         </div>
-                    </div>
-                </div>
-            }
-        }
+                    }
+                }
+            </div>
+
+        </div>
     </div>
 </div>

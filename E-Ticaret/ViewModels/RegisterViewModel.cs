@@ -18,6 +18,7 @@ namespace ETicaretWeb.ViewModels
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Şifre zorunludur.")]
+        [RegularExpression(@"^(?=.*[a-zçğıöşü])(?=.*[A-ZÇĞİÖŞÜ])(?=.*\d)(?=.*[\W_]).{6,}$",ErrorMessage = "Şifreniz en az 6 karakter uzunluğunda olmalı ve en az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter içermelidir.")]
         [DataType(DataType.Password)]
         [Display(Name = "Şifre")]
         public string Password { get; set; } = string.Empty;
