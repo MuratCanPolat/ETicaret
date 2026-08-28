@@ -1,0 +1,64 @@
+﻿@model E_Ticaret.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Ödeme ve Onay";
+}
+
+<div class="container mt-5 mb-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-credit-card me-2"></i>Ödeme ve Sipariş Onayı</h2>
+
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">Teslimat Bilgileri</h5>
+
+                <form asp-action="Checkout" method="post" id="checkoutForm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="ShippingAddress" class="form-label fw-bold">Açık Adresiniz</label>
+                        <textarea asp-for="ShippingAddress" class="form-control" rows="4" placeholder="Mahalle, Sokak, No, İl/İlçe detaylarını giriniz..."></textarea>
+                        <span asp-validation-for="ShippingAddress" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Gerçek bir projede buraya Kredi Kartı inputları gelir. Şimdilik simüle ediyoruz. Hastane git-gellerinden zaman olsa belki bu yaz onu bile entegre edebilirdim. Daha sonra tamamlarım umarım. -->
+                    <div class="alert alert-info rounded-3 mt-4">
+                        <i class="bi bi-info-circle-fill me-2"></i> <strong>Kapıda Ödeme</strong> seçeneği ile sipariş veriyorsunuz. Ücreti teslimatta ödeyeceksiniz.
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card border-0 shadow rounded-4 bg-light p-4">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">Sipariş Özeti</h5>
+
+                <ul class="list-group list-group-flush mb-3 bg-transparent">
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <li class="list-group-item bg-transparent px-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fw-bold d-block">@item.ProductName</span>
+                                <small class="text-muted">@item.Quantity Adet x @item.Price.ToString("C")</small>
+                            </div>
+                            <span class="fw-bold text-dark">@item.TotalPrice.ToString("C")</span>
+                        </li>
+                    }
+                </ul>
+
+                <hr />
+                <div class="d-flex justify-content-between mb-4 fs-4">
+                    <span class="fw-bold">Ödenecek Tutar:</span>
+                    <span class="text-success fw-bolder">@Model.GrandTotal.ToString("C")</span>
+                </div>
+
+                <button type="submit" form="checkoutForm" class="btn btn-primary w-100 rounded-pill fw-bold py-3 shadow-sm fs-5">
+                    Siparişi Onayla <i class="bi bi-check2-circle ms-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

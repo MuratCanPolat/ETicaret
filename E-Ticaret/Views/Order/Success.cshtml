@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Sipariş Alındı";
+}
+
+<div class="container text-center py-5 mt-5">
+    <i class="bi bi-check-circle-fill text-success" style="font-size: 6rem;"></i>
+    <h1 class="fw-bold text-dark mt-4">Siparişiniz Başarıyla Alındı!</h1>
+    <p class="fs-5 text-muted mt-3">
+        Teşekkür ederiz. <strong>#@ViewBag.OrderId</strong> numaralı siparişiniz hazırlanmak üzere satıcıya iletilmiştir.
+    </p>
+
+    <div class="mt-5">
+        <a asp-controller="Products" asp-action="Index" class="btn btn-primary rounded-pill px-5 py-2 fw-bold me-2">Alışverişe Devam Et</a>
+        <!-- Buraya "Siparişlerim" linki eklenecek -->
+        <a href="#" class="btn btn-outline-secondary rounded-pill px-5 py-2 fw-bold">Siparişlerimi Görüntüle</a>
+    </div>
+</div>

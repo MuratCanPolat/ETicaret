@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
   <Project Path="E-Ticaret/E-Ticaret.csproj" />
   <Project Path="ETicaret.Core/ETicaret.Core.csproj" Id="fc2b8ff2-1ca1-44c0-a64f-b50ee436066b" />
   <Project Path="ETicaret.Data/ETicaret.Data.csproj" Id="f3647f91-78c9-4d15-8fef-5f5ac4b4f4e2" />

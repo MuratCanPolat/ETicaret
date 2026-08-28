@@ -45,6 +45,13 @@
                     </form>
 
                     <ul class="navbar-nav ms-auto align-items-center">
+
+                        <li class="nav-item ms-2">
+                            <a class="btn btn-outline-dark rounded-pill px-3" asp-controller="Cart" asp-action="Index">
+                                <i class="bi bi-cart3"></i> Sepetim
+                            </a>
+                        </li>
+
                         @if (User.Identity!.IsAuthenticated)
                         {
                             var currentUser = await UserManager.GetUserAsync(User);

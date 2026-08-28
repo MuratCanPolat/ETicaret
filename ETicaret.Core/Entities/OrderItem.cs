@@ -17,6 +17,10 @@ namespace ETicaret.Core.Entities
         public int Quantity { get; set; }
 
         [Required]
+        [StringLength(50)]
+        public string ItemStatus { get; set; } = "Hazırlanıyor";
+
+        [Required]
         public int OrderId { get; set; }
 
         [Required]

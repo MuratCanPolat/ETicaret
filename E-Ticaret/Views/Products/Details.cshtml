@@ -5,6 +5,13 @@
 }
 
 <div class="container mt-5 mb-5">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> <strong>Başarılı!</strong> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
     <div class="row bg-white p-4 rounded shadow-sm border">
 
         <div class="col-md-6 mb-4 mb-md-0 text-center">
@@ -33,12 +40,29 @@
                 </li>
             </ul>
 
-            <div class="d-grid gap-3 d-md-flex mt-auto">
-                <button class="btn btn-primary btn-lg px-5" @(Model.StockQuantity == 0 ? "disabled" : "")>
-                    <i class="bi bi-cart-plus"></i> Sepete Ekle
-                </button>
-                <a asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">Mağazaya Dön</a>
-            </div>
+            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-grid gap-3 d-md-flex mt-auto align-items-center">
+                <input type="hidden" name="productId" value="@Model.Id" />
+
+                @if (Model.StockQuantity > 0)
+                {
+                    <div class="input-group" style="width: 140px;">
+                        <span class="input-group-text bg-light fw-bold">Adet</span>
+                        <input type="number" name="quantity" class="form-control text-center fw-bold" value="1" min="1" max="@Model.StockQuantity" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                        <i class="bi bi-cart-plus"></i> Sepete Ekle
+                    </button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-secondary btn-lg px-4" disabled>
+                        <i class="bi bi-x-circle"></i> Tükendi
+                    </button>
+                }
+
+                <a asp-action="Index" asp-fragment="urun-@Model.Id" class="btn btn-outline-secondary btn-lg px-4">Mağazaya Dön</a>
+            </form>
         </div>
 
     </div>
